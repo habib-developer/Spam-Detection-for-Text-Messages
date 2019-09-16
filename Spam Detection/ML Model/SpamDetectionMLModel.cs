@@ -4,6 +4,7 @@ using Microsoft.ML.Transforms;
 using Spam_Detection.Data;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -11,7 +12,8 @@ namespace Spam_Detection.ML_Model
 {
     public class SpamDetectionMLModel
     {
-        private readonly string DataPath = "";
+        private static string AppPath => Path.GetDirectoryName(Environment.GetCommandLineArgs()[0]);
+        private static string TrainDataPath => Path.Combine(AppPath, "..", "..", "..", "Data", "SMSSpamCollection.csv");
         private MLContext mlContext;
         private ITransformer _model;
         private EstimatorChain<TransformerChain<KeyToValueMappingTransformer>> _trainingPipeline;
@@ -28,7 +30,7 @@ namespace Spam_Detection.ML_Model
             // Set up the MLContext, which is a catalog of components in ML.NET.
             mlContext = new MLContext();
             // Specify the schema for spam data and read it into DataView.
-            _data = mlContext.Data.LoadFromTextFile<SpamInput>(path: DataPath, hasHeader: true, separatorChar: '\t');
+            _data = mlContext.Data.LoadFromTextFile<SpamInput>(path: TrainDataPath, hasHeader: true, separatorChar: '\t');
             // Data process configuration with pipeline data transformations 
             var dataProcessPipeline = mlContext.Transforms.Conversion.MapValueToKey("Label", "Label")
                                       .Append(mlContext.Transforms.Text.FeaturizeText("FeaturesText", new Microsoft.ML.Transforms.Text.TextFeaturizingEstimator.Options

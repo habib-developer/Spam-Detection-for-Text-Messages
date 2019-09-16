@@ -8,7 +8,7 @@ namespace Spam_Detection.Data
 {
     public class SpamPrediction
     {
-        [ColumnName("predictedLabel")]
+        [ColumnName("PredictedLabel")]
         public string isSpam { get; set; }
     }
 }
